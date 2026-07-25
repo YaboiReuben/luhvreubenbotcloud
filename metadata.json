@@ -1,0 +1,6 @@
+{
+  "name": "Discord Bot Dashboard",
+  "description": "Discord Bot Management Dashboard locked behind a PIN code security screen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
