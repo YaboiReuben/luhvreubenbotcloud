@@ -28,18 +28,22 @@ import {
 export default function App() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('discord_bot_pin_authed') === 'true';
+    try {
+      return localStorage.getItem('discord_bot_pin_authed') === 'true';
+    } catch {
+      return false;
+    }
   });
 
   // Settings State (with custom PIN override)
   const [settings, setSettings] = useState<BotSettings>(() => {
-    const saved = localStorage.getItem('discord_bot_settings');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('discord_bot_settings');
+      if (saved) {
         return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse settings from localStorage', e);
       }
+    } catch (e) {
+      console.error('Failed to parse settings from localStorage', e);
     }
     return INITIAL_SETTINGS;
   });
@@ -52,13 +56,13 @@ export default function App() {
 
   // Commands List State
   const [commands, setCommands] = useState<CommandItem[]>(() => {
-    const saved = localStorage.getItem('discord_bot_commands');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('discord_bot_commands');
+      if (saved) {
         return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse commands', e);
       }
+    } catch (e) {
+      console.error('Failed to parse commands', e);
     }
     return INITIAL_COMMANDS;
   });
@@ -83,12 +87,20 @@ export default function App() {
 
   // Persist settings
   useEffect(() => {
-    localStorage.setItem('discord_bot_settings', JSON.stringify(settings));
+    try {
+      localStorage.setItem('discord_bot_settings', JSON.stringify(settings));
+    } catch (e) {
+      console.warn('localStorage error', e);
+    }
   }, [settings]);
 
   // Persist commands
   useEffect(() => {
-    localStorage.setItem('discord_bot_commands', JSON.stringify(commands));
+    try {
+      localStorage.setItem('discord_bot_commands', JSON.stringify(commands));
+    } catch (e) {
+      console.warn('localStorage error', e);
+    }
   }, [commands]);
 
   // Live Heartbeat Simulation (updates metrics & periodic random logs)
@@ -134,12 +146,20 @@ export default function App() {
 
   // Authentication Handlers
   const handlePinSuccess = () => {
-    localStorage.setItem('discord_bot_pin_authed', 'true');
+    try {
+      localStorage.setItem('discord_bot_pin_authed', 'true');
+    } catch (e) {
+      console.warn('localStorage error', e);
+    }
     setIsAuthenticated(true);
   };
 
   const handleLockSession = () => {
-    localStorage.removeItem('discord_bot_pin_authed');
+    try {
+      localStorage.removeItem('discord_bot_pin_authed');
+    } catch (e) {
+      console.warn('localStorage error', e);
+    }
     setIsAuthenticated(false);
   };
 
